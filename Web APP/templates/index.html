@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <style>
+
+      #map {
+        height: 70%;
+      }
+
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>New York Ditie!</h3>
+
+      <form name="select-Time" action="/" method="post" >
+         <label for="selkey">Select Time:</label>
+         <select name="keyword" class="form-control" id="selkey" onchange="submitForm(this)">
+          <option value="">Select Time</option>
+          <option value="keyword 0">0</option>
+          <option value="keyword 1">1</option>
+          <option value="keyword 2">2</option>
+          <option value="keyword 3">3</option>
+          <option value="keyword 4">4</option>
+          <option value="keyword 5">5</option>
+          <option value="keyword 6">6</option>
+          <option value="keyword 7">7</option>
+          <option value="keyword 8">8</option>
+          <option value="keyword 9">9</option>
+          <option value="keyword 10">10</option>
+          <option value="keyword 11">11</option>
+          <option value="keyword 12">12</option>
+          <option value="keyword 13">13</option>
+          <option value="keyword 14">14</option>
+          <option value="keyword 15">15</option>
+          <option value="keyword 16">16</option>
+          <option value="keyword 17">17</option>
+          <option value="keyword 18">18</option>
+          <option value="keyword 19">19</option>
+          <option value="keyword 20">20</option>
+          <option value="keyword 21">21</option>
+          <option value="keyword 22">22</option>
+          <option value="keyword 23">23</option>
+         </select>
+
+         
+      <input type="submit" value="update map" />
+      </form>
+
+
+
+      
+
+    <p id="demo"></p>
+    <p id="demo2"></p>
+    <p id="demo3"></p>
+    <p id="demo4"></p>
+
+    <div id="map"></div>
+    <div id="test123">{{tweets| safe}}</div>
+
+    <script>
+
+      function initMap() {
+
+
+        var STATIONS = {{Stations| safe}};
+        var size=0;
+        size = STATIONS.length;
+        document.getElementById("demo").innerHTML = "There are " + size + " Stations";
+
+          var latitude = [];
+          var longitude = [];
+
+          for(var i = 0; i < size; i++) {
+
+            latitude[i]=STATIONS[i][3];
+            longitude[i]=STATIONS[i][4];
+          }
+
+        var uluru = {lat: {{lat| safe}} , lng: {{long| safe}}};
+        var markers;
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 12,
+          center: uluru
+        });
+
+        var iconBase = 'http://maps.google.com/mapfiles/kml/paddle/';
+        var icons = {
+          0: {
+
+            url: iconBase + '1.png',
+            scaledSize : new google.maps.Size(22, 40)
+          },
+          1: {
+
+            url: iconBase + '2.png',
+            scaledSize : new google.maps.Size(22, 40),
+          },
+          2: {
+
+            url: iconBase + '3.png',
+            scaledSize : new google.maps.Size(22, 40),
+          },
+          3: {
+
+            url: iconBase + '4.png',
+            scaledSize : new google.maps.Size(22, 40),
+          },
+          4: {
+
+            url: iconBase + '5.png',
+            scaledSize : new google.maps.Size(22, 40),
+          },
+          5: {
+
+            url: iconBase + '6.png',
+            scaledSize : new google.maps.Size(22, 40),
+          }
+        };
+
+          var text = "";
+          var infoWindow = new google.maps.InfoWindow();
+          var click_lat = null;
+          var click_lng = null;
+
+          google.maps.event.addListener(map, "click", function(event) {
+            click_lat = event.latLng.lat();
+            click_lng=event.latLng.lng();
+            document.getElementById("demo3").innerHTML = click_lat;
+            document.getElementById("demo4").innerHTML = click_lng;
+
+          });
+
+          for(var i = 0; i < size; i++) {
+
+            var data = STATIONS[i][0];
+            
+            var sentiment = STATIONS[i][1];
+            
+            var markers = new google.maps.Marker({
+              position: {lat:latitude[i] , lng: longitude[i]},
+              map: map,
+              icon : icons[sentiment]
+      
+        });
+
+              (function (markers, data) {
+                google.maps.event.addListener(markers, "click", function (e) {
+                    infoWindow.setContent("<div style = 'width:200px;min-height:40px'>" + data + "</div>");
+                    infoWindow.open(map, markers);
+                });
+            })(markers, data);
+
+
+
+
+              //text += " " + latitude[i] + " , " + longitude[i] + "<br>";
+      }
+            document.getElementById("demo2").innerHTML = text;
+
+    }
+
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7tUD_Ag0pmg8NAeIv6WyH0K7pPspiBaE&callback=initMap" async defer>
+    </script>
+  </body>
+</html>
